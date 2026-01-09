@@ -17,23 +17,40 @@ int	main(int argc, char **argv) {
 	if (argc < 2)
 		return (std::cerr << "Error: could not open file.\n", 1);
 	try {
+
+		// # the program take an input (a file)
+		// # the program use a database in csv format (provided in the subject)
+		// # the program must outputs values of bitcoins
+		//
 		// 0- create the class BitcoinExchange
 		//		create one private associative arrays (_rates)
-		//1- check file input
+		// 
+		// 1 - clone the csv database in an associative container (std::map/set/multiset/multimap ?)
+		//		
+		// 2 - check file input
 		//	if good
 		//		open
 		//	else
-		//		throw exception (could not open file)  
-		//2- clone the csv database in the containers (std::map)
-		//3- iterate through input file (std::ifstream and std::getline ?), and for each line check :
-		//		if invalid date format
-		//			throw exception (bad input)
-		//		else check if invalid value
-		//			throw exception (not positive number/ too large number)
-		//		else
-		//			iterate on the container which contains the csv databases to find the date of the current
-		//			date iteration or if not found, take the closest lower date.
-		//4- print the date with the value multiplied by the exchange rate. 
+		//		throw exception (could not open file) 
+		//  loop on the file.txt:
+		//		for each line check:
+		//			if  valid line format ("Date | value") 
+		//				&& valid date(format "YEAR-MONTH-DAY" and based on calendar ?)
+		//				&& valid value (INT or Float && between 0 and 1000) 
+		//					handle_input_line(line);
+		//			else
+		//				display "Error: bad input" + input; 
+		// 
+		// 4 - implement helpers
+		//			valid_line(line) => return bool 
+		//			valid_date(line) => return bool 
+		//			valid_value(line) => return bool
+		//
+		// 5 - implement handle_input_line(input) 
+		//		
+		//   print the date with the value multiplied by the exchange rate. 
+		//
+		//
 		std::cout << argv[1] << "\n";	
 
 	}
