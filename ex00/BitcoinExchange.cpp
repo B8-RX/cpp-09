@@ -50,3 +50,42 @@ void	BitcoinExchange::loadDataBase(const std::string& dataCsv) {
 		throw (std::runtime_error("Error: empty dataBase."));
 }
 
+void	BitcoinExchange::processInput(const std::string& input) const {
+	// open the file
+	std::ifstream	inStream(input.c_str());
+	
+	if (!inStream)
+		throw (std::runtime_error("Error: could not open file."));
+	std::string	line;
+	
+	std::getline(inStream, line);
+
+	std::size_t	pos;
+	while (std::getline(inStream, line))
+	{
+		std::string	dateInput;
+		std::string	priceInput;
+		pos = line.find("|");
+		if (pos == std::string::npos)
+		{
+			std::cout << "Error: bad input => " << line << "\n";
+			continue;	
+		}
+		dateInput = line.substr(0, pos);
+		// check IF VALID DATE (FORMAT, EXIST)
+		// if (invalid) print error and continue (skip code below)
+		priceInput = line.substr(++pos); 
+		std::istringstream	iSs(priceInput);
+		float	price;
+
+		if (!(iSs >> price))
+			continue;
+		// check IF VALID NUM (POSITIV, BETWEEN 0-1000)
+				// if (invalid) print error message and continue (skip code below)
+				// 
+		// find the closest date in the container
+		// _mapDataPairs.lower_bound(dateInput);
+		std::map<std::string, double>::const_iterator	it = _mapDataPairs.lower_bound(dateInput);
+		std::cout << "found lower bound: " << it->first << "\n";
+	}
+}

@@ -11,6 +11,7 @@ class	BitcoinExchange {
 		BitcoinExchange(const BitcoinExchange&);
 		BitcoinExchange&				operator=(const BitcoinExchange&);
 		void							loadDataBase(const std::string&);
+		void							processInput(const std::string&) const;
 	private:
 		std::map<std::string, double>	_mapDataPairs;
 };

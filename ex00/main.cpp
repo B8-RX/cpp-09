@@ -20,7 +20,7 @@ int	main(int argc, char **argv) {
 	try {
 		BitcoinExchange	btc;
 		btc.loadDataBase("./data.csv");
-		std::cout << "input file = " << argv[1] << "\n";
+		btc.processInput(argv[1]);
 	}
 	catch (const std::exception& e) {
 		std::cout << e.what() << "\n";	
