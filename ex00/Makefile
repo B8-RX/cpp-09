@@ -1,4 +1,4 @@
-SOURCES = main.cpp BitcoinExchange.cpp
+SOURCES = main.cpp BitcoinExchange.cpp 
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

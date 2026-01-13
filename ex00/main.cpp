@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "BitcoinExchange.hpp"
 #include <iostream>
 
 int	main(int argc, char **argv) {
@@ -17,21 +18,42 @@ int	main(int argc, char **argv) {
 	if (argc < 2)
 		return (std::cerr << "Error: could not open file.\n", 1);
 	try {
+		BitcoinExchange	btc;
+		btc.loadDataBase("./data.csv");
+		std::cout << "input file = " << argv[1] << "\n";
+	}
+	catch (const std::exception& e) {
+		std::cout << e.what() << "\n";	
+	}
+	return (0);
+}
+
 
 		// # the program take an input (a file)
 		// # the program use a database in csv format (provided in the subject)
 		// # the program must outputs values of bitcoins
 		//
-		// 0- create the class BitcoinExchange
-		//		create one private associative arrays (_rates)
-		// 
-		// 1 - clone the csv database in an associative container (std::map/set/multiset/multimap ?)
-		//		
-		// 2 - check file input
-		//	if good
-		//		open
-		//	else
-		//		throw exception (could not open file) 
+		// 0- create the class BitcoinExchange DONE
+		//		create:
+		//			private associative arrays:  std::map<std::string, double>
+		//			public fonctions:
+		//				to load csc database: loadDataBase()  
+		//				to process input.txt: processInput()
+		//
+		// 1 - clone the csv database DONE
+		//	if !is_open()
+		//		throw exception (Error: could not open file) 
+		//	if empty
+		//		throw exception (Error: could not open file) 
+		//  loop on the csv database:
+		//		for each line:
+		//			store key (date) and value (rate) in the private container.
+		//		at the end if container is empty:
+		//			throw exception (Error: empty database)
+		//
+		// 2 - verify file input
+		//	if !is_open()
+		//		throw exception (Error: could not open file) 
 		//  loop on the file.txt:
 		//		for each line check:
 		//			if  valid line format ("Date | value") 
@@ -42,20 +64,12 @@ int	main(int argc, char **argv) {
 		//				display "Error: bad input" + input; 
 		// 
 		// 4 - implement helpers
-		//			valid_line(line) => return bool 
-		//			valid_date(line) => return bool 
-		//			valid_value(line) => return bool
+		//			valid_line() => return bool 
+		//			valid_date() => return bool 
+		//			valid_value() => return bool
 		//
-		// 5 - implement handle_input_line(input) 
-		//		
 		//   print the date with the value multiplied by the exchange rate. 
 		//
 		//
-		std::cout << argv[1] << "\n";	
 
-	}
-	catch (const std::exception& e) {
-		std::cout << e.what() << "\n";	
-	}
-	return (0);
-}
+
