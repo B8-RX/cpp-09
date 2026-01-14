@@ -26,6 +26,18 @@ BitcoinExchange&	BitcoinExchange::operator=(const BitcoinExchange& other) {
 	return (*this);
 }
 
+static void	spaceTrim(std::string& str) {
+	std::string	tmp = str;
+	std::string	spaces = " \f\n\r\t\v";
+	std::size_t	posStart = str.find_first_not_of(spaces);
+	if (posStart != std::string::npos)
+		tmp = str.substr(posStart);
+	std::size_t	posEnd = tmp.find_last_not_of(spaces);
+	if (posEnd != std::string::npos)
+		tmp = tmp.substr(0, posEnd + 1);
+	str = tmp; 
+} 
+
 void	BitcoinExchange::loadDataBase(const std::string& dataCsv) {
 	std::ifstream	fileCsv(dataCsv.c_str());
 	if (!fileCsv)
@@ -39,7 +51,9 @@ void	BitcoinExchange::loadDataBase(const std::string& dataCsv) {
 		if (commaPos == std::string::npos)
 			continue;
 		std::string date = line.substr(0, commaPos);
-		std::string rateStr = line.substr(commaPos + 1); 
+		std::string rateStr = line.substr(commaPos + 1);
+		spaceTrim(date);
+		spaceTrim(rateStr);
 		std::istringstream	iSs(rateStr);
 		double	rate;
 		if (!(iSs >> rate))
@@ -51,15 +65,11 @@ void	BitcoinExchange::loadDataBase(const std::string& dataCsv) {
 }
 
 void	BitcoinExchange::processInput(const std::string& input) const {
-	// open the file
 	std::ifstream	inStream(input.c_str());
-	
 	if (!inStream)
 		throw (std::runtime_error("Error: could not open file."));
 	std::string	line;
-	
 	std::getline(inStream, line);
-
 	std::size_t	pos;
 	while (std::getline(inStream, line))
 	{
@@ -71,21 +81,39 @@ void	BitcoinExchange::processInput(const std::string& input) const {
 			std::cout << "Error: bad input => " << line << "\n";
 			continue;	
 		}
-		dateInput = line.substr(0, pos);
 		// check IF VALID DATE (FORMAT, EXIST)
 		// if (invalid) print error and continue (skip code below)
-		priceInput = line.substr(++pos); 
+		dateInput = line.substr(0, pos);
+		priceInput = line.substr(pos + 1); 
+		spaceTrim(dateInput);
+		spaceTrim(priceInput);
 		std::istringstream	iSs(priceInput);
-		float	price;
+		double	price;
+		char	c;
 
-		if (!(iSs >> price))
+		if (!(iSs >> price) || (iSs >> c))
+		{
+			std::cout << "Error: bad input => " << line << "\n";
 			continue;
-		// check IF VALID NUM (POSITIV, BETWEEN 0-1000)
-				// if (invalid) print error message and continue (skip code below)
-				// 
-		// find the closest date in the container
-		// _mapDataPairs.lower_bound(dateInput);
+		}
+		if (price < 0 || price > 1000)
+		{
+			if (price < 0) std::cout << "Error: not a positive number.\n";
+			else if (price > 1000) std::cout << "Error: too large a number.\n";
+			continue;
+		}
 		std::map<std::string, double>::const_iterator	it = _mapDataPairs.lower_bound(dateInput);
-		std::cout << "found lower bound: " << it->first << "\n";
+		double	result;
+		if (it == _mapDataPairs.end() || it->first != dateInput)
+		{
+			if (it == _mapDataPairs.begin())
+			{
+				std::cout << "Error: could not find data for the date " << dateInput << "\n";
+				continue;
+			}
+			it--;
+		}
+		result = it->second * price;
+		std::cout << dateInput << " => " << price << " = " << result << "\n";
 	}
 }
