@@ -12,6 +12,9 @@
 
 #include "./BitcoinExchange.hpp"
 #include <cstdio>
+#include <ctime>
+#include <iomanip>
+#include <locale>
 #include <stdexcept>
 #include <fstream>
 #include <sstream>
@@ -64,6 +67,43 @@ void	BitcoinExchange::loadDataBase(const std::string& dataCsv) {
 		throw (std::runtime_error("Error: empty dataBase."));
 }
 
+bool	isLeap(int year) {
+	return (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
+}
+
+bool	isNotValidDay(int month, int day) {
+	return (((month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
+			|| (day < 1 || day > 31)); 
+}
+
+bool	isValidDate(const std::string& date) {
+	struct tm result;
+
+	if (strptime(date.c_str(), "%Y-%m-%d", &result) == NULL)
+		return (false);
+	result.tm_mon += 1;
+	result.tm_year += 1900;
+	if ((result.tm_mon) == 2)
+	{
+		if (isLeap(result.tm_year))
+		{
+			if (result.tm_mday > 29)
+				return (false);
+		}
+		else if (result.tm_mday > 28)
+			return (false);
+	}
+	if (isNotValidDay(result.tm_mon, result.tm_mday))
+		return (false);
+	
+		// check IF VALID DATE
+		//	format YYYY-MM-DD      DONE
+		//	good YEAR 
+		//	good MONTH             
+		//	good DAY                 DONE
+	return (true);
+}
+
 void	BitcoinExchange::processInput(const std::string& input) const {
 	std::ifstream	inStream(input.c_str());
 	if (!inStream)
@@ -81,12 +121,15 @@ void	BitcoinExchange::processInput(const std::string& input) const {
 			std::cout << "Error: bad input => " << line << "\n";
 			continue;	
 		}
-		// check IF VALID DATE (FORMAT, EXIST)
-		// if (invalid) print error and continue (skip code below)
 		dateInput = line.substr(0, pos);
 		priceInput = line.substr(pos + 1); 
 		spaceTrim(dateInput);
 		spaceTrim(priceInput);
+		if (!isValidDate(dateInput))
+		{
+			std::cout << "Error: bad input => " << line << "\n";
+			continue;
+		}
 		std::istringstream	iSs(priceInput);
 		double	price;
 		char	c;
