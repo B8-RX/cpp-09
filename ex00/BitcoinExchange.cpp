@@ -33,6 +33,11 @@ static void	spaceTrim(std::string& str) {
 	std::string	tmp = str;
 	std::string	spaces = " \f\n\r\t\v";
 	std::size_t	posStart = str.find_first_not_of(spaces);
+	if (posStart == std::string::npos)
+	{
+		str.clear();
+		return;
+	}
 	if (posStart != std::string::npos)
 		tmp = str.substr(posStart);
 	std::size_t	posEnd = tmp.find_last_not_of(spaces);
@@ -77,30 +82,35 @@ bool	isNotValidDay(int month, int day) {
 }
 
 bool	isValidDate(const std::string& date) {
-	struct tm result;
-
-	if (strptime(date.c_str(), "%Y-%m-%d", &result) == NULL)
+	if (date.size() != 10 || date[4] != '-' || date[7] != '-')
 		return (false);
-	result.tm_mon += 1;
-	result.tm_year += 1900;
-	if ((result.tm_mon) == 2)
+	std::string	yStr, mStr, dStr;
+	yStr = date.substr(0, 4);
+	mStr = date.substr(5, 2);
+	dStr = date.substr(8, 2);
+
+	std::istringstream	iSy(yStr), iSm(mStr), iSd(dStr);
+	int y, m, d;
+	char c;
+
+	if (!(iSy >> y) || (iSy >> c)) return (false);
+	if (!(iSm >> m) || (iSm >> c)) return (false);
+	if (!(iSd >> d) || (iSd >> c)) return (false);
+
+	if (m < 1 || m > 12)
+		return (false);
+	if (isNotValidDay(m, d))
+		return (false);
+	if ((m) == 2)
 	{
-		if (isLeap(result.tm_year))
+		if (isLeap(y))
 		{
-			if (result.tm_mday > 29)
+			if (d > 29)
 				return (false);
 		}
-		else if (result.tm_mday > 28)
+		else if (d > 28)
 			return (false);
 	}
-	if (isNotValidDay(result.tm_mon, result.tm_mday))
-		return (false);
-	
-		// check IF VALID DATE
-		//	format YYYY-MM-DD      DONE
-		//	good YEAR 
-		//	good MONTH             
-		//	good DAY                 DONE
 	return (true);
 }
 
