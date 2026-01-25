@@ -12,12 +12,49 @@
 
 #include <cstring>
 #include <iostream>
+#include <queue>
 #include <sstream>
+#include <stack>
 
 bool	isOperator(char* token) {
 	if (token[0] != '+' && token[0] != '-' && token[0] != '*' && token[0] != '/')
 		return (false);
 	return (true);
+}
+
+int	errorExit(void) {
+	std::cerr << "Error\n";
+	return (1);
+}
+
+void	calc(char op, std::stack<double>& stack) {
+
+	// guard for division by 0
+	double	right;
+	double	left;	
+	double	res;
+
+	right = stack.top();
+	stack.pop();
+	left = stack.top();
+	stack.pop();
+	switch (op) {
+	case '+':
+		res = left + right;
+		break;
+	case '-':
+		res = left - right;
+		break;
+	case '*':
+		res = left * right;
+		break;
+	case '/':
+		res = left / right;
+		break;
+	default:
+		break;
+	}
+	stack.push(res);
 }
 
 int	main(int argc, char **argv) {
@@ -28,16 +65,23 @@ int	main(int argc, char **argv) {
 	}
 	char*	input = argv[1];
 	char* tok = std::strtok(input, " ");
+	std::stack<double>	stck;
 	while (tok)
 	{
 		std::istringstream	iSs(tok);
 		double	n;
-		if (!isOperator(tok) && !(iSs >> n))
+		if (iSs >> n)
+			stck.push(n);
+		else if (!isOperator(tok))
+			return (errorExit());
+		else 
 		{
-			std::cerr << "Error\n";
-			return (1);
+			std::cout << "try to process operation\n";
+			if (stck.size() < 2)
+				return (errorExit());
+			calc(tok[0], stck);
 		}
-		std::cout << "token: " << tok << "\n";
+		std::cout << "token: " << stck.top() << "\n";
 		tok = std::strtok(NULL, " ");
 	}
 	// take an string input 
