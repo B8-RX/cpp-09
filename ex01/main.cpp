@@ -70,28 +70,30 @@ int	main(int argc, char **argv) {
 	{
 		std::istringstream	iSs(tok);
 		double	n;
-		if (iSs >> n)
+		char	c;
+
+		if ((iSs >> n))
+		{
+			if (iSs >> c || n >= 10)
+				return (errorExit());
 			stck.push(n);
-		else if (!isOperator(tok))
+		}
+		else if (!isOperator(tok) || stck.size() < 2)
 			return (errorExit());
 		else 
-		{
-			std::cout << "try to process operation\n";
-			if (stck.size() < 2)
-				return (errorExit());
 			calc(tok[0], stck);
-		}
-		std::cout << "token: " << stck.top() << "\n";
 		tok = std::strtok(NULL, " ");
 	}
-	// take an string input 
-	// contains mumbers and operators separate by spaces
-	// less than 10 numbers
-	// support +-*/ operators
-	// loop on the string until EOF
+	if (stck.size() != 1)
+		return (errorExit());
+	std::cout << "token: " << stck.top() << "\n";
+	// take an string input OK 
+	// contains mumbers and operators separate by spaces OK
+	// input numbers less than 10 OK 
+	// support +-*/ operators OK
+	// loop on the string until EOF OK
 	//	if the current element is 
 	//		- number => push on stack
-	//		- space => skip
 	//		- operators => 
 	//				check if there is two number stored before
 	//					if yes
@@ -99,9 +101,13 @@ int	main(int argc, char **argv) {
 	//					if no
 	//						print error and exit
 	//			push the result on a the stack 
-	//		- not a number/space/operators
+	//		- not a number/operators/stack size < 2
 	//			print error and exit
-	// output the result
+	// when the loop ends
+	//	check the stack size
+	//		if stack size != 1
+	//			print error and exit
+	// output the result OK
 
 	return (0);
 }
