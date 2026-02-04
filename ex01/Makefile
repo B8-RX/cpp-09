@@ -9,7 +9,7 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 
 HEADERS = RPN.hpp 
 
-NAME = rpn 
+NAME = RPN 
 
 # DEPS = $(OBJECTS:.o=.d)
 

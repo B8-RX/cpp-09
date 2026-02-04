@@ -14,7 +14,21 @@
 # define RPN_HPP
 
 #include <string>
+#include <stack>
+#include <list>
 
-
+class RPN {
+	public:
+		RPN(void);
+		~RPN(void);
+		RPN(const RPN&);
+		RPN&			operator=(const RPN&);
+		int				processRpn(const std::string& input);
+	private:
+		std::stack<int, std::list<int> >	_stack;
+		bool			_calculate(char op);
+		bool			_isOperator(const std::string& c) const;
+		int				_error(void);
+};
 
 #endif // !RPN_HPP
