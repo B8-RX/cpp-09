@@ -21,31 +21,40 @@
 
 class	FordJohnson {
 	public:
-		FordJohnson(void);
+		FordJohnson(char** input, int argc);
 		~FordJohnson(void);
 		
-		void	parseInput(char **input, int argc);
 		class	inputErrorException : public std::exception {
 			public:
 				virtual const char* what() const throw() {
 					return ("Error");
 				}
 		};
+		
+		
+		void								parseInput(char **input, int argc);
 		void								fillVector(void);
 		void								fillDeque(void);
 		void								displayBeforeAfter(void);
 		void								displayTimeDelta(void);
 	private:
 		std::vector<int>					_vecInput;
+		
 		std::vector<std::pair<int, int> >	_vecPairs;
+		std::vector<int>					_vecMain;	
+		std::vector<int>					_vecSmalls;	
+		
 		std::deque<std::pair<int, int> >	_deqPairs;
-		std::vector<int>					_vecSorted;	
 		std::deque<int>						_deqSorted;
+		
 		std::clock_t						_t_start_vec;
 		std::clock_t						_t_end_vec;
 		std::clock_t						_t_start_deq;
 		std::clock_t						_t_end_deq;
+		
 		void								_makeVecPairs(void);
+		void								_vecMergeSort(std::size_t size, std::size_t n);
+		void								_vecJacobsthal(std::size_t size, std::size_t i);
 };
 
 #endif // !PMERGEME_HPP

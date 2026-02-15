@@ -1,4 +1,5 @@
 #include "PmergeMe.hpp"
+#include <cstddef>
 #include <iterator>
 #include <limits>
 #include <sstream>
@@ -6,7 +7,14 @@
 #include <iomanip>
 #include <algorithm>
 
-FordJohnson::FordJohnson(void) {}
+FordJohnson::FordJohnson(char** input, int argc) {
+	FordJohnson::parseInput(input, argc);
+	FordJohnson::fillVector();
+	FordJohnson::_vecJacobsthal(_vecSmalls.size(), 0);
+	FordJohnson::fillDeque();
+	FordJohnson::displayBeforeAfter();
+	FordJohnson::displayTimeDelta();
+}
 
 FordJohnson::~FordJohnson(void) {}
 
@@ -37,19 +45,20 @@ void	FordJohnson::displayBeforeAfter(void) {
 		std::cout << _vecInput[i] << " ";
 	std::cout << "\n";
 	std::cout << "After: ";
-	for (std::size_t i = 0; i < _vecSorted.size(); ++i)
-		std::cout << _vecSorted[i] << " ";
+	for (std::size_t i = 0; i < _vecMain.size(); ++i)
+		std::cout << _vecMain[i] << " ";
+	std::cout << "\n";
+	for (std::size_t i = 0; i < _vecSmalls.size(); ++i)
+		std::cout << _vecSmalls[i] << " ";
 	std::cout << "\n";
 }
 
 void	FordJohnson::fillVector(void) {
-	if (!_vecSorted.empty())
-		_vecSorted.clear();
+	if (!_vecPairs.empty())
+		_vecPairs.clear();
 	_t_start_vec = std::clock();
-	// _makeVecPairs();	
-	for (std::size_t i = 0; i < _vecInput.size(); i++)
-		_vecSorted.push_back(_vecInput[i]);
-	std::sort(_vecSorted.begin(), _vecSorted.end());
+	_makeVecPairs();
+	_vecMergeSort(_vecPairs.size(), 0);
 	_t_end_vec = std::clock();
 }
 
@@ -64,14 +73,24 @@ void	FordJohnson::fillDeque(void) {
 }
 
 void	FordJohnson::displayTimeDelta(void) {
-	std::cout << "Time to process a range of " << _vecSorted.size() << " elements with std::vector : " << std::fixed << std::setprecision(4) << 1000 * (static_cast<double>(_t_end_vec - _t_start_vec) / CLOCKS_PER_SEC) << " ms\n";
+	std::cout << "Time to process a range of " << _vecMain.size() << " elements with std::vector : " << std::fixed << std::setprecision(4) << 1000 * (static_cast<double>(_t_end_vec - _t_start_vec) / CLOCKS_PER_SEC) << " ms\n";
 	std::cout << "Time to process a range of " << _deqSorted.size() << " elements with std::deque : " << std::fixed << std::setprecision(4) << 1000 * (static_cast<double>(_t_end_deq - _t_start_deq) / CLOCKS_PER_SEC) << " ms\n";
 }
 
 void	FordJohnson::_makeVecPairs(void) {
-		int	big;
-		int small;
-		for (std::size_t i = 0; i + 1 < _vecInput.size(); ++i) 
+		int					big;
+		int					small;
+		int					isOdd;
+		std::pair<int, int> curr;
+		std::size_t			i;
+
+		if (_vecInput.empty())
+			throw (inputErrorException());
+		_vecPairs.reserve(_vecInput.size()/2);
+
+		isOdd = _vecInput.size() % 2;
+
+		for (i = 0; i < _vecInput.size() - isOdd; i += 2) 
 		{
 			if (_vecInput[i] > _vecInput[i + 1])
 			{
@@ -83,12 +102,37 @@ void	FordJohnson::_makeVecPairs(void) {
 				big = _vecInput[i + 1];
 				small = _vecInput[i];
 			}
-			_vecPairs[i].first = big;
-			_vecPairs[i].second = small;
+			curr.first = big;
+			curr.second = small;
+			_vecPairs.push_back(curr);
 		}
-		for (std::size_t i = 0; i < _vecPairs.size(); ++i)
+		if (isOdd)
 		{
-			std::cout << "big = " << _vecPairs[i].first << "\n";
-			std::cout << "small = " << _vecPairs[i].second << "\n";
+			curr.first = _vecInput[i];
+			curr.second = -1;
+			_vecPairs.push_back(curr);
 		}
 }
+
+void	FordJohnson::_vecMergeSort(std::size_t size, std::size_t n) {
+		if (n >= size)
+		{
+			std::cout << "finish recursive sort job\n";
+			return;
+		}
+		int	isOdd = _vecPairs[size - 1].second == -1; 
+		if (_vecMain.empty() && isOdd)
+			_vecMain.push_back(_vecPairs[size - 1].first);
+		for (std::size_t i = 0; i < size; ++i) {
+			if (isOdd && i == size -1)
+				continue;
+			_vecMain.push_back(_vecPairs[i].first);
+			_vecSmalls.push_back(_vecPairs[i].second);
+		}
+}
+
+void	FordJohnson::_vecJacobsthal(std::size_t size, std::size_t i) {
+	std::cout << "vec _vecJacobsthal: size = " << size << ". index = " << i << "\n";
+}
+
+

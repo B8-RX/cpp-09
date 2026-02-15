@@ -25,14 +25,7 @@ int	main(int argc, char **argv) {
 		return (1);
 	}
 	try {
-		FordJohnson	pmergeMe;
-		pmergeMe.parseInput(argv, argc);
-		pmergeMe.fillVector();
-		pmergeMe.fillVector();
-		pmergeMe.fillDeque();
-		pmergeMe.fillDeque();
-		pmergeMe.displayBeforeAfter();
-		pmergeMe.displayTimeDelta();
+		FordJohnson	pmergeMe(argv, argc);
 	} catch (const std::exception& e) {
 		std::cout << e.what() << "\n";
 		return (1);
