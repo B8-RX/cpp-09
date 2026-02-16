@@ -52,23 +52,9 @@ class	FordJohnson {
 		std::clock_t						_t_start_deq;
 		std::clock_t						_t_end_deq;
 		
-		void								_makeVecPairs(void);
-		void								_vecMergeSort(std::size_t size, std::size_t n);
-		void								_vecJacobsthal(std::size_t size, std::size_t i);
+		void								_mergeInsertion(void);
+		void								_setSequenceJacobsthal(std::size_t size);
+		std::vector<int>					_vecSequenceJacobsthal;
 };
 
 #endif // !PMERGEME_HPP
-	   
-	   // vecInput
-	   
-	   // vecPairs
-	   // deqPairs
-	   //
-	   //
-	   // copy input in vecInput
-	   // call vecPairs and deqPairs
-	   // create pairs
-	   //	sort bigs/small
-	   //	if input is odd 
-	   //		store strugler if found
-	   // sort pairs by their bigs
