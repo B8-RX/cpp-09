@@ -88,6 +88,23 @@ void	FordJohnson::displayTimeDelta(void) {
 	std::cout << "Time to process a range of " << _deqSorted.size() << " elements with std::deque : " << std::fixed << std::setprecision(4) << 1000 * (static_cast<double>(_t_end_deq - _t_start_deq) / CLOCKS_PER_SEC) << " ms\n";
 }
 
+void	FordJohnson::_mergePairs(std::vector<std::pair<int, int> >& vp, std::size_t left, std::size_t mid, std::size_t right) {
+	if (vp.empty() || right >= vp.size())
+		return;
+
+}
+
+void	FordJohnson::_mergeSortPairs(std::vector<std::pair<int, int> >& vp, std::size_t left, std::size_t right) {
+	if (vp.empty() || right >= vp.size())
+		return;
+	if (left >= right)
+		return;
+	std::size_t	mid = left + (right - left) / 2;
+	FordJohnson::_mergeSortPairs(vp, left, mid);
+	FordJohnson::_mergeSortPairs(vp, mid + 1, right);
+	FordJohnson::_mergePairs(vp, left, mid, right);
+}
+
 void	FordJohnson::_makePairsFromInput(void) {
 	int					big;
 	int					small;
@@ -119,7 +136,7 @@ void	FordJohnson::_makePairsFromInput(void) {
 		curr.second = small;
 		_vecPairs.push_back(curr);
 	}
-
+	_mergeSortPairs(_vecPairs, 0, _vecPairs.size());
 	vecPairsLen = _vecPairs.size();
 	for (std::size_t i = 0; i < vecPairsLen; ++i) {
 		_vecMain.push_back(_vecPairs[i].first);

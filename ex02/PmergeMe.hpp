@@ -13,6 +13,7 @@
 #ifndef PMERGEME_HPP
 # define PMERGEME_HPP
 
+#include <cstddef>
 #include <exception>
 #include <ctime>
 #include <vector>
@@ -54,7 +55,9 @@ class	FordJohnson {
 		std::clock_t						_t_end_deq;
 		
 		void								_makePairsFromInput(void);
-		void								_mergeSortInsertionPairs(std::vector<std::pair<int,int> >&, std::size_t n);
+		void								_mergeSortInsertionPairs(std::vector<std::pair<int,int> >&,
+																		std::size_t left, std::size_t right);
+		void								_mergePairs(std::vector<std::pair<int, int> >&, std::size_t left, std::size_t mid, std::size_t right);
 		void								_setSequenceJacobsthal(std::size_t size);
 		std::vector<int>					_vecSequenceJacobsthal;
 };
