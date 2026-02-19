@@ -6,14 +6,7 @@
 #include <iomanip>
 #include <algorithm>
 
-FordJohnson::FordJohnson(char** input, int argc) {
-	FordJohnson::parseInput(input, argc);
-	FordJohnson::_setSequenceJacobsthal(_vecInput.size()/2); // add one if input(n) is odd ?
-	FordJohnson::fillVector();
-	FordJohnson::fillDeque();
-	FordJohnson::displayBeforeAfter();
-	FordJohnson::displayTimeDelta();
-}
+FordJohnson::FordJohnson(void) {}
 
 FordJohnson::~FordJohnson(void) {}
 
@@ -172,8 +165,8 @@ void	FordJohnson::_makePairsFromInput(void) {
 }
 
 
-void	FordJohnson::_setSequenceJacobsthal(std::size_t size) {
-	std::size_t	i;
+void	FordJohnson::setSequenceJacobsthal(int size) {
+	int			i;
 	int			curr;
 	_vecSequenceJacobsthal.push_back(0);
 	_vecSequenceJacobsthal.push_back(1);

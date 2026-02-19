@@ -10,11 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <algorithm>
 #include <ctime>
-#include <deque>
 #include <exception>
-#include <iomanip>
 #include <iostream>
 #include "PmergeMe.hpp"
 
@@ -25,7 +22,13 @@ int	main(int argc, char **argv) {
 		return (1);
 	}
 	try {
-		FordJohnson	pmergeMe(argv, argc);
+		FordJohnson	pmergeMe;
+		pmergeMe.parseInput(argv, argc);
+		pmergeMe.setSequenceJacobsthal((argc - 1) / 2);
+		pmergeMe.fillVector();
+		pmergeMe.fillDeque();
+		pmergeMe.displayBeforeAfter();
+		pmergeMe.displayTimeDelta();
 	} catch (const std::exception& e) {
 		std::cout << e.what() << "\n";
 		return (1);

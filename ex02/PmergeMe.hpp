@@ -22,7 +22,7 @@
 
 class	FordJohnson {
 	public:
-		FordJohnson(char** input, int argc);
+		FordJohnson(void);
 		~FordJohnson(void);
 		
 		class	ErrorException : public std::exception {
@@ -34,6 +34,7 @@ class	FordJohnson {
 		
 		
 		void								parseInput(char **input, int argc);
+		void								setSequenceJacobsthal(int size);
 		void								fillVector(void);
 		void								fillDeque(void);
 		void								displayBeforeAfter(void);
@@ -55,10 +56,9 @@ class	FordJohnson {
 		std::clock_t						_t_end_deq;
 		
 		void								_makePairsFromInput(void);
-			void								_mergeSortPairs(std::vector<std::pair<int,int> >&,
-																		std::size_t left, std::size_t right);
+		void								_mergeSortPairs(std::vector<std::pair<int,int> >&,
+															std::size_t left, std::size_t right);
 		void								_mergePairs(std::vector<std::pair<int, int> >&, std::size_t left, std::size_t mid, std::size_t right);
-		void								_setSequenceJacobsthal(std::size_t size);
 		std::vector<int>					_vecSequenceJacobsthal;
 };
 
