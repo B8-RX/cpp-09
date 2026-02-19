@@ -1,6 +1,5 @@
 #include "PmergeMe.hpp"
 #include <cstddef>
-#include <iterator>
 #include <limits>
 #include <sstream>
 #include <iostream>
@@ -91,11 +90,34 @@ void	FordJohnson::displayTimeDelta(void) {
 void	FordJohnson::_mergePairs(std::vector<std::pair<int, int> >& vp, std::size_t left, std::size_t mid, std::size_t right) {
 	if (vp.empty() || right >= vp.size())
 		return;
+	std::vector<std::pair<int, int> > vpTmp;
+	std::size_t	i = left;
+	std::size_t j = mid + 1;
 
+	vpTmp.reserve(right - left + 1);
+	while (i <= mid && j <= right)
+	{
+		if (vp[i].first <= vp[j].first)
+		{
+			vpTmp.push_back(vp[i]);
+			i++;
+		}
+		else 
+		{
+			vpTmp.push_back(vp[j]);
+			j++;
+		}
+	}
+	for (; i <= mid; ++i)
+		vpTmp.push_back(vp[i]);
+	for (; j <= right; ++j)
+		vpTmp.push_back(vp[j]);
+	for (std::size_t k = 0; k < vpTmp.size(); ++k)
+		vp[left + k] = vpTmp[k];
 }
 
 void	FordJohnson::_mergeSortPairs(std::vector<std::pair<int, int> >& vp, std::size_t left, std::size_t right) {
-	if (vp.empty() || right >= vp.size())
+	if (vp.empty() || left >= vp.size() || left >= right || right >= vp.size())
 		return;
 	if (left >= right)
 		return;
@@ -112,11 +134,13 @@ void	FordJohnson::_makePairsFromInput(void) {
 	std::pair<int, int> curr;
 	std::size_t			i;
 	std::size_t			vecInputLen;
-	std::size_t			vecPairsLen;
 
 	if (_vecInput.empty())
 		throw (FordJohnson::ErrorException());
 	vecInputLen = _vecInput.size();
+	_vecPairs.clear();
+	_vecMain.clear();
+	_vecSmalls.clear();
 	_vecPairs.reserve(_vecInput.size()/2);
 	isOdd = vecInputLen % 2;
 
@@ -136,9 +160,10 @@ void	FordJohnson::_makePairsFromInput(void) {
 		curr.second = small;
 		_vecPairs.push_back(curr);
 	}
-	_mergeSortPairs(_vecPairs, 0, _vecPairs.size());
-	vecPairsLen = _vecPairs.size();
-	for (std::size_t i = 0; i < vecPairsLen; ++i) {
+	if (_vecPairs.size() > 1)
+		_mergeSortPairs(_vecPairs, 0, _vecPairs.size() -1);
+	
+	for (i = 0; i < _vecPairs.size(); ++i) {
 		_vecMain.push_back(_vecPairs[i].first);
 		_vecSmalls.push_back(_vecPairs[i].second);
 	}
@@ -148,12 +173,12 @@ void	FordJohnson::_makePairsFromInput(void) {
 
 
 void	FordJohnson::_setSequenceJacobsthal(std::size_t size) {
-	std::size_t	startIndex;
+	std::size_t	i;
 	int			curr;
 	_vecSequenceJacobsthal.push_back(0);
 	_vecSequenceJacobsthal.push_back(1);
-	for (startIndex = 2; startIndex < size; ++startIndex) {
-		curr = _vecSequenceJacobsthal[startIndex - 1] + _vecSequenceJacobsthal[startIndex - 2] * 2;
+	for (i = 2; i < size; ++i) {
+		curr = _vecSequenceJacobsthal[i - 1] + _vecSequenceJacobsthal[i - 2] * 2;
 		_vecSequenceJacobsthal.push_back(curr);
 	}
 }
