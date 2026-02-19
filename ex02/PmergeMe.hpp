@@ -56,6 +56,8 @@ class	FordJohnson {
 		std::clock_t						_t_end_deq;
 		
 		void								_makePairsFromInput(void);
+		void								_buildPairs(bool odd);
+		void								_buildMainAndSmall(bool odd);
 		void								_mergeSortPairs(std::vector<std::pair<int,int> >&,
 															std::size_t left, std::size_t right);
 		void								_mergePairs(std::vector<std::pair<int, int> >&, std::size_t left, std::size_t mid, std::size_t right);
