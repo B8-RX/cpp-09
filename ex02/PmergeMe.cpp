@@ -29,28 +29,50 @@ void	FordJohnson::parseInput(char** input, int argc) {
 		}
 		_vecInput.push_back(static_cast<int>(nl));
 	}
+	_odd = _vecInput.size() % 2;
 }
 
-void	FordJohnson::displayBeforeAfter(void) {
+void	FordJohnson::displayBeforeAfter(void) const {
 	std::cout << "Before: ";
-	for (std::size_t i = 0; i < _vecInput.size(); ++i)
+	std::size_t	i;
+	for (i = 0; i < _vecInput.size(); ++i)
 		std::cout << _vecInput[i] << " ";
 	std::cout << "\n";
 	std::cout << "After: ";
-	std::cout << "No displayed yet \n";
-	
+	for (i = 0; i < _vecMain.size(); ++i)
+		std::cout << _vecMain[i] << " ";
+	std::cout << "\n";
 	std::cout << "Pair->firsts: ";
-	for (std::size_t i = 0; i < _vecPairs.size(); ++i)
+	for (i = 0; i < _vecPairs.size(); ++i)
 		std::cout << _vecPairs[i].first << " ";
 	std::cout << "\n";
 	std::cout << "Main:   ";
-	for (std::size_t i = 0; i < _vecMain.size(); ++i)
+	for (i = 0; i < _vecMain.size(); ++i)
 		std::cout << _vecMain[i] << "    ";
 	std::cout << "\n";
 	std::cout << "Smalls: ";
-	for (std::size_t i = 0; i < _vecSmalls.size(); ++i)
+	for (i = 0; i < _vecSmalls.size(); ++i)
 		std::cout << _vecSmalls[i] << "    ";
 	std::cout << "\n";
+}
+
+std::size_t	FordJohnson::_lowerBound(const std::vector<int>& v, int x) const {
+	std::size_t left = 0;
+	std::size_t right = v.size();
+	while (left < right)
+	{
+		std::size_t mid = left + (right - left) / 2;
+		if (v[mid] < x)
+			left = mid + 1;
+		else
+			right = mid;
+	}
+	return (left);
+}
+
+void	FordJohnson::_insertSmallSimple(void) {
+	for (std::size_t i = 0; i < _vecSmalls.size(); ++i)
+		_vecMain.insert(_vecMain.begin() + _lowerBound(_vecMain, _vecSmalls[i]), _vecSmalls[i]);
 }
 
 void	FordJohnson::fillVector(void) {
@@ -62,6 +84,10 @@ void	FordJohnson::fillVector(void) {
 	}
 	_t_start_vec = std::clock();
 	_makePairsFromInput();
+	if (_vecPairs.size() > 1)
+		_mergeSortPairs(_vecPairs, 0, _vecPairs.size() -1);
+	_buildMainAndSmall();
+	_insertSmallSimple();
 	_t_end_vec = std::clock();
 }
 
@@ -75,14 +101,14 @@ void	FordJohnson::fillDeque(void) {
 	_t_end_deq = std::clock();
 }
 
-void	FordJohnson::displayTimeDelta(void) {
+void	FordJohnson::displayTimeDelta(void) const {
 	std::cout << "Time to process a range of " << _vecMain.size() << " elements with std::vector : " << std::fixed << std::setprecision(4) << 1000 * (static_cast<double>(_t_end_vec - _t_start_vec) / CLOCKS_PER_SEC) << " ms\n";
 	std::cout << "Time to process a range of " << _deqSorted.size() << " elements with std::deque : " << std::fixed << std::setprecision(4) << 1000 * (static_cast<double>(_t_end_deq - _t_start_deq) / CLOCKS_PER_SEC) << " ms\n";
 }
 
 void	FordJohnson::_mergePairs(std::vector<std::pair<int, int> >& vp, std::size_t left, std::size_t mid, std::size_t right) {
 	if (vp.empty() || right >= vp.size())
-		return;
+		throw FordJohnson::ErrorException();
 	std::vector<std::pair<int, int> > vpTmp;
 	std::size_t	i = left;
 	std::size_t j = mid + 1;
@@ -110,30 +136,30 @@ void	FordJohnson::_mergePairs(std::vector<std::pair<int, int> >& vp, std::size_t
 }
 
 void	FordJohnson::_mergeSortPairs(std::vector<std::pair<int, int> >& vp, std::size_t left, std::size_t right) {
-	if (vp.empty() || left >= vp.size() || left >= right || right >= vp.size())
-		return;
+	if (vp.empty() || left >= vp.size() || right >= vp.size())
+		throw FordJohnson::ErrorException();
 	if (left >= right)
-		return;
+		return ;
 	std::size_t	mid = left + (right - left) / 2;
 	FordJohnson::_mergeSortPairs(vp, left, mid);
 	FordJohnson::_mergeSortPairs(vp, mid + 1, right);
 	FordJohnson::_mergePairs(vp, left, mid, right);
 }
 
-void	FordJohnson::_buildMainAndSmall(bool odd) {
+void	FordJohnson::_buildMainAndSmall() {
 	for (std::size_t i = 0; i < _vecPairs.size(); ++i) {
 		_vecMain.push_back(_vecPairs[i].first);
 		_vecSmalls.push_back(_vecPairs[i].second);
 	}
-	if (odd)
+	if (_odd)
 		_vecSmalls.push_back(_vecInput[_vecInput.size() -1]);
 }
 
-void	FordJohnson::_buildPairs(bool odd) {
+void	FordJohnson::_buildPairs() {
 	std::pair<int, int> curr;
 	std::size_t			i;
 
-	for (i = 0; i < _vecInput.size() - odd; i += 2) 
+	for (i = 0; i < _vecInput.size() - _odd; i += 2) 
 	{
 		int a = _vecInput[i];
 		int b = _vecInput[i + 1];
@@ -152,20 +178,13 @@ void	FordJohnson::_buildPairs(bool odd) {
 }
 
 void	FordJohnson::_makePairsFromInput(void) {
-	bool			odd;
-
 	if (_vecInput.empty())
 		throw (FordJohnson::ErrorException());
 	_vecPairs.clear();
 	_vecMain.clear();
 	_vecSmalls.clear();
 	_vecPairs.reserve(_vecInput.size()/2);
-	odd = _vecInput.size() % 2;
-
-	_buildPairs(odd);
-	if (_vecPairs.size() > 1)
-		_mergeSortPairs(_vecPairs, 0, _vecPairs.size() -1);
-	_buildMainAndSmall(odd);
+	_buildPairs();
 }
 
 

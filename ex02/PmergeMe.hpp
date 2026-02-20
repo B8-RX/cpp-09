@@ -37,11 +37,12 @@ class	FordJohnson {
 		void								setSequenceJacobsthal(int size);
 		void								fillVector(void);
 		void								fillDeque(void);
-		void								displayBeforeAfter(void);
-		void								displayTimeDelta(void);
+		void								displayBeforeAfter(void) const;
+		void								displayTimeDelta(void) const;
 	private:
 		std::vector<int>					_vecInput;
-		
+		bool								_odd;		
+		bool								_found;		
 		std::vector<std::pair<int, int> >	_vecPairs;
 		std::vector<std::pair<int, int> >	_vecPairsSorted;
 		std::vector<int>					_vecMain;	
@@ -56,11 +57,17 @@ class	FordJohnson {
 		std::clock_t						_t_end_deq;
 		
 		void								_makePairsFromInput(void);
-		void								_buildPairs(bool odd);
-		void								_buildMainAndSmall(bool odd);
+		void								_buildPairs();
+		void								_buildMainAndSmall();
+		std::size_t							_lowerBound(const std::vector<int>&, int x) const;
+		void								_insertSmallSimple();
 		void								_mergeSortPairs(std::vector<std::pair<int,int> >&,
-															std::size_t left, std::size_t right);
-		void								_mergePairs(std::vector<std::pair<int, int> >&, std::size_t left, std::size_t mid, std::size_t right);
+															std::size_t left,
+															std::size_t right);
+		void								_mergePairs(std::vector<std::pair<int, int> >&,
+														std::size_t left,
+														std::size_t mid,
+														std::size_t right);
 		std::vector<int>					_vecSequenceJacobsthal;
 };
 
