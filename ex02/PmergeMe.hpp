@@ -42,11 +42,9 @@ class	FordJohnson {
 	private:
 		std::vector<int>					_vecInput;
 		bool								_odd;		
-		bool								_found;		
 		std::vector<std::pair<int, int> >	_vecPairs;
-		std::vector<std::pair<int, int> >	_vecPairsSorted;
+		std::vector<std::pair<int, int> >	_vecPairsPend;
 		std::vector<int>					_vecMain;	
-		std::vector<int>					_vecSmalls;	
 		
 		std::deque<std::pair<int, int> >	_deqPairs;
 		std::deque<int>						_deqSorted;
@@ -59,7 +57,8 @@ class	FordJohnson {
 		void								_makePairsFromInput(void);
 		void								_buildPairs();
 		void								_buildMainAndSmall();
-		std::size_t							_lowerBound(const std::vector<int>&, int x) const;
+		std::size_t							_lowerBound(const std::vector<int>&,
+														std::size_t bound, int x) const;
 		void								_insertSmallSimple();
 		void								_mergeSortPairs(std::vector<std::pair<int,int> >&,
 															std::size_t left,
