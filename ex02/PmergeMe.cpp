@@ -41,11 +41,22 @@ void	FordJohnson::displayBeforeAfter(void) const {
 	std::cout << "After: ";
 	for (i = 0; i < _vecMain.size(); ++i)
 		std::cout << _vecMain[i] << " ";
+	
 	std::cout << "\n";
-	std::cout << "Pair->firsts: ";
+	std::cout << "Jacobsthal seq: ";
+	for (i = 0; i < _vecSequenceJacobsthal.size(); ++i)
+		std::cout << _vecSequenceJacobsthal[i] << " ";
+	
+	std::cout << "\n";
+	std::cout << "Pair->first:  ";
 	for (i = 0; i < _vecPairs.size(); ++i)
 		std::cout << _vecPairs[i].first << " ";
 	std::cout << "\n";
+	std::cout << "Pair->second: ";
+	for (i = 0; i < _vecPairs.size(); ++i)
+		std::cout << _vecPairs[i].second << " ";
+	std::cout << "\n";
+	
 	std::cout << "Main:   ";
 	for (i = 0; i < _vecMain.size(); ++i)
 		std::cout << _vecMain[i] << "    ";
@@ -68,7 +79,8 @@ void	FordJohnson::fillVector(void) {
 	if (_vecPairs.size() > 1)
 		_mergeSortPairs(_vecPairs, 0, _vecPairs.size() -1);
 	_buildMainAndSmall();
-	_insertSmallSimple();
+	// _insertSmallSimple();
+	_insertSmallJacobsthal();
 	_t_end_vec = std::clock();
 }
 
@@ -110,6 +122,10 @@ void	FordJohnson::_insertSmallSimple(void) {
 		std::size_t posIns = _lowerBound(_vecMain, bound, small);
 		_vecMain.insert(_vecMain.begin() + posIns, small);
 	}
+}
+
+void	FordJohnson::_insertSmallJacobsthal(void) {
+	std::cout << "work in _insertSmallJacobsthal function\n";
 }
 
 void	FordJohnson::displayTimeDelta(void) const {
@@ -201,6 +217,7 @@ void	FordJohnson::_buildPairs() {
 		}
 		_vecPairs.push_back(curr);
 	}
+	_setSequenceJacobsthal(_vecPairs.size());
 }
 
 void	FordJohnson::_makePairsFromInput(void) {
@@ -214,9 +231,9 @@ void	FordJohnson::_makePairsFromInput(void) {
 }
 
 
-void	FordJohnson::setSequenceJacobsthal(int size) {
-	int			i;
-	int			curr;
+void	FordJohnson::_setSequenceJacobsthal(std::size_t size) {
+	std::size_t	i;
+	std::size_t	curr;
 	_vecSequenceJacobsthal.push_back(0);
 	_vecSequenceJacobsthal.push_back(1);
 	for (i = 2; i < size; ++i) {

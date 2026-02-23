@@ -34,7 +34,6 @@ class	FordJohnson {
 		
 		
 		void								parseInput(char **input, int argc);
-		void								setSequenceJacobsthal(int size);
 		void								fillVector(void);
 		void								fillDeque(void);
 		void								displayBeforeAfter(void) const;
@@ -60,6 +59,7 @@ class	FordJohnson {
 		std::size_t							_lowerBound(const std::vector<int>&,
 														std::size_t bound, int x) const;
 		void								_insertSmallSimple();
+		void								_insertSmallJacobsthal();
 		void								_mergeSortPairs(std::vector<std::pair<int,int> >&,
 															std::size_t left,
 															std::size_t right);
@@ -67,7 +67,8 @@ class	FordJohnson {
 														std::size_t left,
 														std::size_t mid,
 														std::size_t right);
-		std::vector<int>					_vecSequenceJacobsthal;
+		void										_setSequenceJacobsthal(std::size_t size);
+		std::vector<std::size_t>					_vecSequenceJacobsthal;
 };
 
 #endif // !PMERGEME_HPP

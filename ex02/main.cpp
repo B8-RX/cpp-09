@@ -24,7 +24,6 @@ int	main(int argc, char **argv) {
 	try {
 		FordJohnson	pmergeMe;
 		pmergeMe.parseInput(argv, argc);
-		pmergeMe.setSequenceJacobsthal((argc - 1) / 2);
 		pmergeMe.fillVector();
 		pmergeMe.fillDeque();
 		pmergeMe.displayBeforeAfter();
