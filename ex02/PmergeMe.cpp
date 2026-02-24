@@ -90,7 +90,7 @@ std::vector<std::size_t>	FordJohnson::_setInsertionList(std::size_t n) {
 		orderList.push_back(i);
 		used[i] = true;
 	}
-	for (std::size_t s = 2; _jacobList[s] < _vPend.size(); ++s)
+	for (std::size_t s = 3; _jacobList[s] < _vPend.size(); ++s)
 	{
 		std::size_t j = _jacobList[s];
 		if (j >= n)
@@ -288,12 +288,14 @@ void	FordJohnson::_makePairsFromInput(const std::string& type) {
 		_dPend.clear();
 		_buildPairs("deque");
 	}
-	_setSequenceJacobsthal((_vecInput.size()/2) + _odd);
+	_setSequenceJacobsthal(_vecInput.size()/2 + _odd);
 }
 
 void	FordJohnson::_setSequenceJacobsthal(std::size_t size) {
 	std::size_t	i;
 	std::size_t	curr;
+	if (!_jacobList.empty())
+		_jacobList.clear();
 	_jacobList.push_back(0);
 	_jacobList.push_back(1);
 	for (i = 2; i < size; ++i) {
