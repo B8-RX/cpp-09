@@ -19,6 +19,7 @@
 #include <vector>
 #include <deque>
 #include <utility>
+#include <string>
 
 class	FordJohnson {
 	public:
@@ -39,27 +40,31 @@ class	FordJohnson {
 		void								displayBeforeAfter(void) const;
 		void								displayTimeDelta(void) const;
 	private:
-		std::vector<int>					_vecInput;
-		bool								_odd;		
-		std::vector<std::pair<int, int> >	_vecPairs;
-		std::vector<std::pair<int, int> >	_vecPairsPend;
-		std::vector<int>					_vecMain;	
 		
-		std::deque<std::pair<int, int> >	_deqPairs;
-		std::deque<int>						_deqSorted;
+		bool								_odd;		
+		std::vector<int>					_vecInput;
+
+		std::vector<std::pair<int, int> >	_vPairs;
+		std::vector<std::pair<int, int> >	_vPend;
+		std::vector<int>					_vMain;	
+		
+		std::deque<std::pair<int, int> >	_dPairs;
+		std::deque<int>						_dMain;
+		std::deque<std::pair<int, int> >	_dPend;
 		
 		std::clock_t						_t_start_vec;
 		std::clock_t						_t_end_vec;
 		std::clock_t						_t_start_deq;
 		std::clock_t						_t_end_deq;
 		
-		void								_makePairsFromInput(void);
-		void								_buildPairs();
-		void								_buildMainAndSmall();
+		void								_makePairsFromInput(const std::string& type);
+		void								_buildPairs(const std::string& type);
+		void								_buildMainAndPend(void);
 		std::size_t							_lowerBound(const std::vector<int>&,
 														std::size_t bound, int x) const;
-		void								_insertSmallSimple();
-		void								_insertSmallJacobsthal();
+		void								_insertPendSimple(void);
+		void								_insertPendJacobsthal(void);
+		std::vector<std::size_t>			_setInsertionList(std::size_t n);
 		void								_mergeSortPairs(std::vector<std::pair<int,int> >&,
 															std::size_t left,
 															std::size_t right);
@@ -68,7 +73,7 @@ class	FordJohnson {
 														std::size_t mid,
 														std::size_t right);
 		void										_setSequenceJacobsthal(std::size_t size);
-		std::vector<std::size_t>					_vecSequenceJacobsthal;
+		std::vector<std::size_t>					_jacobList;
 };
 
 #endif // !PMERGEME_HPP
