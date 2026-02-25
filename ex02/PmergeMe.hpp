@@ -19,7 +19,6 @@
 #include <vector>
 #include <deque>
 #include <utility>
-#include <string>
 
 class	FordJohnson {
 	public:
@@ -56,9 +55,9 @@ class	FordJohnson {
 		std::clock_t						_t_end_vec;
 		std::clock_t						_t_start_deq;
 		std::clock_t						_t_end_deq;
-		
-		void								_makePairsFromInput(const std::string& type);
-		void								_buildPairs(const std::string& type);
+	
+		template<class Container>
+		void								_makePairsFromInput(Container&);
 		void								_buildMainAndPend(void);
 		std::size_t							_lowerBound(const std::vector<int>&,
 														std::size_t bound, int x) const;
