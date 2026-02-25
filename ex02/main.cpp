@@ -29,17 +29,8 @@ int	main(int argc, char **argv) {
 		pmergeMe.displayBeforeAfter();
 		pmergeMe.displayTimeDelta();
 	} catch (const std::exception& e) {
-		std::cout << e.what() << "\n";
+		std::cerr << e.what() << "\n";
 		return (1);
 	}
 	return (0);
 }
-
-//  input : ./PmergeMe <...numbers>
-//  output: 
-//			- before: (unsorted input)
-//			- after: (sorted input)
-//			- time taken for container 1
-//			- time taken for container 2
-// errors:
-//			empty input, negative number, INTMAX, non numeric, duplicates

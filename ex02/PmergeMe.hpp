@@ -16,6 +16,7 @@
 #include <cstddef>
 #include <exception>
 #include <ctime>
+#include <iterator>
 #include <vector>
 #include <deque>
 #include <utility>
@@ -50,24 +51,40 @@ class	FordJohnson {
 		std::deque<std::pair<int, int> >	_dPairs;
 		std::deque<int>						_dMain;
 		std::deque<std::pair<int, int> >	_dPend;
+
+
 		
+		std::size_t							_jacobCompCount;
+
 		std::clock_t						_t_start_vec;
 		std::clock_t						_t_end_vec;
 		std::clock_t						_t_start_deq;
 		std::clock_t						_t_end_deq;
 	
 		template<class Container>
-		void								_makePairsFromInput(Container&);
-		void								_buildMainAndPend(void);
-		std::size_t							_lowerBound(const std::vector<int>&,
-														std::size_t bound, int x) const;
-		void								_insertPendSimple(void);
-		void								_insertPendJacobsthal(void);
+		void								_makePairsFromInput(Container& c_pairs);
+		template<class C_pairs, class C_main, class C_pends> 
+		void								_buildMainAndPend(C_pairs&, C_main&, C_pends&);
+		template<class Container>
+		std::size_t							_lowerBound(Container& c,
+														std::size_t bound, int x, std::size_t& count) const;
+		
+		// to testing diff	
+		// std::size_t							_simpleCompCount;
+		// std::size_t							_insertPendSimple(void);
+		// std::clock_t						_t_start_vecSimp;
+		// std::clock_t						_t_end_vecSimp;
+	
+
+		template<class C_main, class C_pends>
+		std::size_t							_insertPendJacobsthal(C_main&, C_pends&);
 		std::vector<std::size_t>			_setInsertionList(std::size_t n);
-		void								_mergeSortPairs(std::vector<std::pair<int,int> >&,
+		template<class Container>
+		void								_mergeSortPairs(Container& c_pairs,
 															std::size_t left,
 															std::size_t right);
-		void								_mergePairs(std::vector<std::pair<int, int> >&,
+		template<class Container>
+		void								_mergePairs(Container& c_pairs,
 														std::size_t left,
 														std::size_t mid,
 														std::size_t right);
