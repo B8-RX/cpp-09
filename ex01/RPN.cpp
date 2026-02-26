@@ -26,6 +26,25 @@ RPN&	RPN::operator=(const RPN& other) {
 	return (*this);
 }
 
+int	RPN::processRpn(const std::string& input) {
+	std::istringstream	iSs(input);
+	std::string			tok;
+	
+	while(!_stack.empty())
+		_stack.pop();
+	while (iSs >> tok)
+	{
+		if (tok.size() == 1 && (tok[0] >= '0' && tok[0] <= '9'))
+			_stack.push(tok[0] - '0');
+		else if (!_isOperator(tok) || _stack.size() < 2 || !_calculate(tok[0]))
+			return (_error());
+	}
+	if (_stack.size() != 1)
+		return (_error());
+	std::cout << _stack.top() << "\n";
+	return (0);
+}
+
 int	RPN::_error(void) {
 	std::cerr << "Error\n";
 	return (1);
@@ -64,23 +83,4 @@ bool	RPN::_calculate(char op) {
 	}
 	_stack.push(res);
 	return (true);
-}
-
-int	RPN::processRpn(const std::string& input) {
-	std::istringstream	iSs(input);
-	std::string			tok;
-	
-	while(!_stack.empty())
-		_stack.pop();
-	while (iSs >> tok)
-	{
-		if (tok.size() == 1 && (tok[0] >= '0' && tok[0] <= '9'))
-			_stack.push(tok[0] - '0');
-		else if (!_isOperator(tok) || _stack.size() < 2 || !_calculate(tok[0]))
-			return (_error());
-	}
-	if (_stack.size() != 1)
-		return (_error());
-	std::cout << _stack.top() << "\n";
-	return (0);
 }

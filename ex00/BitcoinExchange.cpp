@@ -29,23 +29,6 @@ BitcoinExchange&	BitcoinExchange::operator=(const BitcoinExchange& other) {
 	return (*this);
 }
 
-static void	spaceTrim(std::string& str) {
-	std::string	tmp = str;
-	std::string	spaces = " \f\n\r\t\v";
-	std::size_t	posStart = str.find_first_not_of(spaces);
-	if (posStart == std::string::npos)
-	{
-		str.clear();
-		return;
-	}
-	if (posStart != std::string::npos)
-		tmp = str.substr(posStart);
-	std::size_t	posEnd = tmp.find_last_not_of(spaces);
-	if (posEnd != std::string::npos)
-		tmp = tmp.substr(0, posEnd + 1);
-	str = tmp; 
-} 
-
 void	BitcoinExchange::loadDataBase(const std::string& dataCsv) {
 	std::ifstream	fileCsv(dataCsv.c_str());
 	if (!fileCsv)
@@ -72,47 +55,22 @@ void	BitcoinExchange::loadDataBase(const std::string& dataCsv) {
 		throw (std::runtime_error("Error: empty dataBase."));
 }
 
-bool	isLeap(int year) {
-	return (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
-}
-
-bool	isNotValidDay(int month, int day) {
-	return (((month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
-			|| (day < 1 || day > 31)); 
-}
-
-bool	isValidDate(const std::string& date) {
-	if (date.size() != 10 || date[4] != '-' || date[7] != '-')
-		return (false);
-	std::string	yStr, mStr, dStr;
-	yStr = date.substr(0, 4);
-	mStr = date.substr(5, 2);
-	dStr = date.substr(8, 2);
-
-	std::istringstream	iSy(yStr), iSm(mStr), iSd(dStr);
-	int y, m, d;
-	char c;
-
-	if (!(iSy >> y) || (iSy >> c)) return (false);
-	if (!(iSm >> m) || (iSm >> c)) return (false);
-	if (!(iSd >> d) || (iSd >> c)) return (false);
-
-	if (m < 1 || m > 12)
-		return (false);
-	if (isNotValidDay(m, d))
-		return (false);
-	if ((m) == 2)
+void	BitcoinExchange::spaceTrim(std::string& str) const {
+	std::string	tmp = str;
+	std::string	spaces = " \f\n\r\t\v";
+	std::size_t	posStart = str.find_first_not_of(spaces);
+	if (posStart == std::string::npos)
 	{
-		if (isLeap(y))
-		{
-			if (d > 29)
-				return (false);
-		}
-		else if (d > 28)
-			return (false);
+		str.clear();
+		return;
 	}
-	return (true);
-}
+	if (posStart != std::string::npos)
+		tmp = str.substr(posStart);
+	std::size_t	posEnd = tmp.find_last_not_of(spaces);
+	if (posEnd != std::string::npos)
+		tmp = tmp.substr(0, posEnd + 1);
+	str = tmp; 
+} 
 
 void	BitcoinExchange::processInput(const std::string& input) const {
 	std::ifstream	inStream(input.c_str());
@@ -170,3 +128,50 @@ void	BitcoinExchange::processInput(const std::string& input) const {
 		std::cout << dateInput << " => " << price << " = " << result << "\n";
 	}
 }
+
+bool	BitcoinExchange::isValidDay(int month, int day) const {
+	bool	isValid = true;
+	if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
+		isValid = false;
+	if (day < 1 || day > 31)
+		isValid = false;
+	return (isValid); 
+}
+
+bool	BitcoinExchange::isValidDate(const std::string& date) const {
+	if (date.size() != 10 || date[4] != '-' || date[7] != '-')
+		return (false);
+	std::string	yStr, mStr, dStr;
+	yStr = date.substr(0, 4);
+	mStr = date.substr(5, 2);
+	dStr = date.substr(8, 2);
+
+	std::istringstream	iSy(yStr), iSm(mStr), iSd(dStr);
+	int y, m, d;
+	char c;
+
+	if (!(iSy >> y) || (iSy >> c)) return (false);
+	if (!(iSm >> m) || (iSm >> c)) return (false);
+	if (!(iSd >> d) || (iSd >> c)) return (false);
+
+	if (m < 1 || m > 12)
+		return (false);
+	if (!isValidDay(m, d))
+		return (false);
+	if ((m) == 2)
+	{
+		if (isLeap(y))
+		{
+			if (d > 29)
+				return (false);
+		}
+		else if (d > 28)
+			return (false);
+	}
+	return (true);
+}
+
+bool	BitcoinExchange::isLeap(int year) const {
+	return (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
+}
+

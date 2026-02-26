@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   PmergeMe.cpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssghioua <ssghioua@42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/13 02:38:45 by ssghioua          #+#    #+#             */
+/*   Updated: 2026/02/13 02:38:50 by ssghioua         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "PmergeMe.hpp"
 #include <cstddef>
 #include <limits>
@@ -74,7 +86,7 @@ std::size_t	FordJohnson::_lowerBound(Container& c, std::size_t right, int x, std
 	return (left);
 }
 
-std::vector<std::size_t>	FordJohnson::_setInsertionList(std::size_t n) {
+std::vector<std::size_t>	FordJohnson::_setOrderInsertion(std::size_t n) {
 	std::vector<std::size_t>	orderList;
 	std::vector<bool>	used(n, false);
 	if (n == 0)
@@ -112,7 +124,7 @@ std::vector<std::size_t>	FordJohnson::_setInsertionList(std::size_t n) {
 
 template<class C_main, class C_pends>
 std::size_t	FordJohnson::_insertPendJacobsthal(C_main& main, C_pends& pends) {
-	std::vector<std::size_t>	order = _setInsertionList(pends.size());
+	std::vector<std::size_t>	order = _setOrderInsertion(pends.size());
 	_jacobCompCount = 0;
 	for (std::size_t i = 0; i < order.size(); ++i)
 	{
@@ -129,10 +141,16 @@ std::size_t	FordJohnson::_insertPendJacobsthal(C_main& main, C_pends& pends) {
 void	FordJohnson::displayTimeDelta(void) const {
 	std::cout << "Time to process a range of " << _vMain.size() << " elements with std::vector : " << std::fixed << std::setprecision(4) << 1000 * (static_cast<double>(_t_end_vec - _t_start_vec) / CLOCKS_PER_SEC) << " ms\n";
 	std::cout << "Time to process a range of " << _dMain.size() << " elements with std::deque : " << std::fixed << std::setprecision(4) << 1000 * (static_cast<double>(_t_end_deq - _t_start_deq) / CLOCKS_PER_SEC) << " ms\n";
-	// uncomment output below and in fillVector() to test comparaison count between linear insertion and Jacobsthal order insertion 
-	// std::cout << "Time to process a range of " << _dMain.size() << " elements with std::vec [test] : " << std::fixed << std::setprecision(4) << 1000 * (static_cast<double>(_t_end_vecSimp - _t_start_vecSimp) / CLOCKS_PER_SEC) << " ms\n";
-	// std::cout << "SIMPLE ORDER: comparaison count = " << _simpleCompCount << "\n";
-	// std::cout << "JACOB ORDER: comparaison count = " << _jacobCompCount << "\n";
+}
+
+void	FordJohnson::fillVector(void) {
+	_t_start_vec = std::clock();
+	_makePairsFromInput(_vPairs);
+	if (_vPairs.size() > 1)
+		_mergeSortPairs(_vPairs, 0, _vPairs.size() -1);
+	_buildMainAndPend(_vPairs, _vMain, _vPend);
+	_jacobCompCount = _insertPendJacobsthal(_vMain, _vPend);
+	_t_end_vec = std::clock();
 }
 
 void	FordJohnson::fillDeque(void) {
@@ -144,44 +162,6 @@ void	FordJohnson::fillDeque(void) {
 	_insertPendJacobsthal(_dMain, _dPend);
 	_t_end_deq = std::clock();
 }
-
-void	FordJohnson::fillVector(void) {
-	_t_start_vec = std::clock();
-	_makePairsFromInput(_vPairs);
-	if (_vPairs.size() > 1)
-		_mergeSortPairs(_vPairs, 0, _vPairs.size() -1);
-	_buildMainAndPend(_vPairs, _vMain, _vPend);
-	_jacobCompCount = _insertPendJacobsthal(_vMain, _vPend);
-	_t_end_vec = std::clock();
-	// uncomment to test comparaison count between linear insertion and Jacobsthal order insertion 
-	// _vPairs.clear();
-	// _vMain.clear();
-	// _vPend.clear();
-	//
-	// _t_start_vecSimp = std::clock();
-	// _makePairsFromInput(_vPairs);
-	// if (_vPairs.size() > 1)
-	// 	_mergeSortPairs(_vPairs, 0, _vPairs.size() -1);
-	// _buildMainAndPend(_vPairs, _vMain, _vPend);
-	// _simpleCompCount = _insertPendSimple();
-	// _t_end_vecSimp = std::clock();
-}
-
-//
-// std::size_t	FordJohnson::_insertPendSimple(void) {
-// 	std::size_t i;
-// 	_simpleCompCount = 0;
-// 	for (i = 0; i < _vPend.size(); ++i)
-// 	{
-// 		int	small = _vPend[i].first;
-// 		int	big = _vPend[i].second;
-// 		std::size_t posBig = _lowerBound(_vMain, _vMain.size(), big, _simpleCompCount);
-// 		std::size_t bound = (big == std::numeric_limits<int>::max()) ? _vMain.size() : (posBig + 1);
-// 		std::size_t posIns = _lowerBound(_vMain, bound, small, _simpleCompCount);
-// 		_vMain.insert(_vMain.begin() + posIns, small);
-// 	}
-// 	return (_simpleCompCount);
-// }
 
 template<class Container>
 void	FordJohnson::_mergePairs(Container& c, std::size_t left, std::size_t mid, std::size_t right) {
@@ -283,3 +263,37 @@ void	FordJohnson::_setSequenceJacobsthal(std::size_t size) {
 		_jacobList.push_back(curr);
 	}
 }
+	
+// uncomment the code below and put it in FordJohnson::displayTimeDelta() to test comparaison between sequencial insertion vs Jacobsthal order insertion 
+	// std::cout << "Time to process a range of " << _dMain.size() << " elements with std::vec [test] : " << std::fixed << std::setprecision(4) << 1000 * (static_cast<double>(_t_end_vecSimp - _t_start_vecSimp) / CLOCKS_PER_SEC) << " ms\n";
+	// std::cout << "SIMPLE ORDER: comparaison count = " << _simpleCompCount << "\n";
+	// std::cout << "JACOB ORDER: comparaison count = " << _jacobCompCount << "\n";
+
+// uncomment the code below and put it to FordJohnson::fillVector() to test comparaison count sequencial vs Jacobsthal order insertion 
+	// _vPairs.clear();
+	// _vMain.clear();
+	// _vPend.clear();
+	//
+	// _t_start_vecSimp = std::clock();
+	// _makePairsFromInput(_vPairs);
+	// if (_vPairs.size() > 1)
+	// 	_mergeSortPairs(_vPairs, 0, _vPairs.size() -1);
+	// _buildMainAndPend(_vPairs, _vMain, _vPend);
+	// _simpleCompCount = _insertPendSimple();
+	// _t_end_vecSimp = std::clock();
+
+// uncomment the code below to test comparaison count sequencial vs Jacobsthal order insertion 
+	// std::size_t	FordJohnson::_insertPendSimple(void) {
+	// 	std::size_t i;
+	// 	_simpleCompCount = 0;
+	// 	for (i = 0; i < _vPend.size(); ++i)
+	// 	{
+	// 		int	small = _vPend[i].first;
+	// 		int	big = _vPend[i].second;
+	// 		std::size_t posBig = _lowerBound(_vMain, _vMain.size(), big, _simpleCompCount);
+	// 		std::size_t bound = (big == std::numeric_limits<int>::max()) ? _vMain.size() : (posBig + 1);
+	// 		std::size_t posIns = _lowerBound(_vMain, bound, small, _simpleCompCount);
+	// 		_vMain.insert(_vMain.begin() + posIns, small);
+	// 	}
+	// 	return (_simpleCompCount);
+	// }

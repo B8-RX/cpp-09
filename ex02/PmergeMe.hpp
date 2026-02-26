@@ -69,7 +69,7 @@ class	FordJohnson {
 		std::size_t							_lowerBound(Container& c,
 														std::size_t bound, int x, std::size_t& count) const;
 		
-		// to testing diff	
+		// uncomment to test (sequence vs jacob)  	
 		// std::size_t							_simpleCompCount;
 		// std::size_t							_insertPendSimple(void);
 		// std::clock_t						_t_start_vecSimp;
@@ -78,7 +78,7 @@ class	FordJohnson {
 
 		template<class C_main, class C_pends>
 		std::size_t							_insertPendJacobsthal(C_main&, C_pends&);
-		std::vector<std::size_t>			_setInsertionList(std::size_t n);
+		std::vector<std::size_t>			_setOrderInsertion(std::size_t n);
 		template<class Container>
 		void								_mergeSortPairs(Container& c_pairs,
 															std::size_t left,
