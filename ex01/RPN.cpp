@@ -58,7 +58,9 @@ bool	RPN::_calculate(char op) {
 	int	right;
 	int	left;	
 	int	res;
-
+	
+	if (_stack.size() < 2)
+		return (false);
 	right = _stack.top();
 	_stack.pop();
 	left = _stack.top();

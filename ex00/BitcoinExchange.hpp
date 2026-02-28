@@ -23,12 +23,15 @@ class	BitcoinExchange {
 		BitcoinExchange(const BitcoinExchange&);
 		BitcoinExchange&				operator=(const BitcoinExchange&);
 		void							loadDataBase(const std::string&);
-		void							spaceTrim(std::string& str) const;
 		void							processInput(const std::string&) const;
-		bool							isValidDate(const std::string& date) const;
-		bool							isValidDay(int month, int day) const;
-		bool							isLeap(int year) const;
 	private:
 		std::map<std::string, double>	_mapDataPairs;
+		void							_spaceTrim(std::string& str) const;
+		bool							_isValidInputFileHeader(std::ifstream& inStream) const;
+		bool							_isValidDate(const std::string& date, const std::string& line) const;
+		bool							_isValidDay(int month, int day, int year) const;
+		bool							_isLeap(int year) const;
+		bool							_isValidPrice(const std::string& priceInput, double& price, const std::string& line) const;
+		bool							_searchAndCalculate(const std::string& date, double price) const;
 };
 #endif // !BITCOINEXCHANGE_HPP

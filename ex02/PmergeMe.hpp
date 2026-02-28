@@ -13,10 +13,8 @@
 #ifndef PMERGEME_HPP
 # define PMERGEME_HPP
 
-#include <cstddef>
 #include <exception>
 #include <ctime>
-#include <iterator>
 #include <vector>
 #include <deque>
 #include <utility>
@@ -32,7 +30,6 @@ class	FordJohnson {
 					return ("Error");
 				}
 		};
-		
 		
 		void								parseInput(char **input, int argc);
 		void								fillVector(void);
@@ -52,15 +49,13 @@ class	FordJohnson {
 		std::deque<int>						_dMain;
 		std::deque<std::pair<int, int> >	_dPend;
 
-
-		
-		std::size_t							_jacobCompCount;
-
 		std::clock_t						_t_start_vec;
 		std::clock_t						_t_end_vec;
 		std::clock_t						_t_start_deq;
 		std::clock_t						_t_end_deq;
-	
+
+		std::size_t							_jacobCompCount;
+
 		template<class Container>
 		void								_makePairsFromInput(Container& c_pairs);
 		template<class C_pairs, class C_main, class C_pends> 
@@ -68,14 +63,6 @@ class	FordJohnson {
 		template<class Container>
 		std::size_t							_lowerBound(Container& c,
 														std::size_t bound, int x, std::size_t& count) const;
-		
-		// uncomment to test (sequence vs jacob)  	
-		// std::size_t							_simpleCompCount;
-		// std::size_t							_insertPendSimple(void);
-		// std::clock_t						_t_start_vecSimp;
-		// std::clock_t						_t_end_vecSimp;
-	
-
 		template<class C_main, class C_pends>
 		std::size_t							_insertPendJacobsthal(C_main&, C_pends&);
 		std::vector<std::size_t>			_setOrderInsertion(std::size_t n);
@@ -93,3 +80,12 @@ class	FordJohnson {
 };
 
 #endif // !PMERGEME_HPP
+		
+
+// uncomment to test (sequence vs jacob)  	
+		// std::size_t							_simpleCompCount;
+		// std::size_t							_insertPendSimple(void);
+		// std::clock_t						_t_start_vecSimp;
+		// std::clock_t						_t_end_vecSimp;
+	
+
